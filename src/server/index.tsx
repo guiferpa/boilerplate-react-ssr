@@ -19,7 +19,7 @@ app.use("^/$", async (req: Request, res: Response) => {
     const rendered = data.replace(
       '<div data-js="bundle"></div>',
       `<div data-js="bundle">${ReactDOMServer.renderToString(<App />)}</div>`
-    ).replace('<title></title>', '<title>From SSR</title>');
+    );
     res.status(HttpStatusCodes.OK).send(rendered);
   } catch(err) {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(err.message);
