@@ -6,6 +6,12 @@ const config: Configuration = {
   module: {
     rules: [
       {
+        test: /\.svg$/,
+        use: {
+          loader: '@svgr/webpack'
+        }
+      },
+      {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: {
@@ -17,7 +23,6 @@ const config: Configuration = {
               "@babel/preset-typescript",
             ],
             plugins: [
-              "react-hot-loader/babel",
               ["babel-plugin-styled-components", { ssr: true }]
             ]
           },
@@ -26,7 +31,7 @@ const config: Configuration = {
     ],
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin({ async: false }),
+    new ForkTsCheckerWebpackPlugin({ async: false })
   ],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx']

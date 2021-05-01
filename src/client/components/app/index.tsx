@@ -1,17 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
-//import UnicornSVG from '../../../../images/unicorn.svg';
+// import styled from 'styled-components';
+// import UnicornSVG from '../../../../images/unicorn.svg';
 
-const Title = styled.h1`
-  color: #6d6d6d;
-`
+interface StateProps {
+  message: string;
+}
 
-const App: React.FunctionComponent = () => {
-  return (
-    <>
-      <Title> Hello World </Title>
-    </>
-  );
+interface DispatchProps {}
+
+interface Props extends StateProps, DispatchProps {}
+
+const App: React.FunctionComponent<Props> = (props) => {
+  const { message } = props;
+  return <h1> {message} </h1>;
 }
 
 export default App;
