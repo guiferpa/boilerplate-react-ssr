@@ -1,6 +1,7 @@
 import path from 'path';
 import express, { Application, Request, Response } from 'express';
 import HttpStatusCodes from 'http-status-codes';
+import serialize from 'serialize-javascript';
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -9,7 +10,7 @@ import { ServerStyleSheet } from 'styled-components';
 import App from '../client/components/app';
 
 const initialState = {
-  message: "Hello from server side"
+  message: "Hello from client side"
 }
 
 const app: Application = express();
@@ -19,11 +20,11 @@ app.use("/public", express.static(path.resolve(__dirname, "./public")));
 app.get("*", async (req: Request, res: Response) => {
   const sheet = new ServerStyleSheet();
   try {
-    const message: string = "Hello from client side";
+    const message: string = "Hello from server side";
 
     const rendered: string = ReactDOMServer.renderToString(
       sheet.collectStyles(
-        <App message={message} />
+        <App />
       )
     );
 
@@ -36,7 +37,7 @@ app.get("*", async (req: Request, res: Response) => {
           ${sheet.getStyleTags()}
           <script src="/public/bundle.js" defer></script>
           <script>
-            window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
+            window.__INITIAL_STATE__ = ${serialize(initialState)};
           </script>
         </head>
         <body>
@@ -45,7 +46,7 @@ app.get("*", async (req: Request, res: Response) => {
       </html>
     `
 
-    res.status(HttpStatusCodes.OK).send(html);
+    res.contentType('text/html').status(HttpStatusCodes.OK).send(html);
   } catch(err) {
     res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(err.message);
   } finally {
