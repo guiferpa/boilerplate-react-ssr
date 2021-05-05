@@ -6,11 +6,14 @@ import serialize from 'serialize-javascript';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
+import { Provider } from 'react-redux';
 
-import App from '../client/components/app';
+import { configureStore } from '../shared/store';
+
+import AppContainer from '../shared/containers/app';
 
 const initialState = {
-  message: "Hello from client side"
+  message: "Hello World"
 }
 
 const app: Application = express();
@@ -19,12 +22,14 @@ app.use("/public", express.static(path.resolve(__dirname, "./public")));
 
 app.get("*", async (req: Request, res: Response) => {
   const sheet = new ServerStyleSheet();
-  try {
-    const message: string = "Hello from server side";
+  const store = configureStore(() => initialState);
 
+  try {
     const rendered: string = ReactDOMServer.renderToString(
       sheet.collectStyles(
-        <App />
+        <Provider store={store}>
+          <AppContainer />
+        </Provider>
       )
     );
 
@@ -37,11 +42,11 @@ app.get("*", async (req: Request, res: Response) => {
           ${sheet.getStyleTags()}
           <script src="/public/bundle.js" defer></script>
           <script>
-            window.__INITIAL_STATE__ = ${serialize(initialState)};
+            window.__INITIAL_STATE__ = ${serialize(store.getState())};
           </script>
         </head>
         <body>
-          <div data-js="bundle">${rendered}</div>
+          <div data-app="root">${rendered}</div>
         </body>
       </html>
     `

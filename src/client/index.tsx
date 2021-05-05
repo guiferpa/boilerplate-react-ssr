@@ -1,8 +1,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/app';
+import { Provider } from 'react-redux';
+
+import AppContainer from '../shared/containers/app';
+import { configureStore } from '../shared/store';
+
+declare global {
+  interface Window {
+    __INITIAL_STATE__: any;
+  }
+}
+
+const state = window.__INITIAL_STATE__;
+
+delete window.__INITIAL_STATE__;
+
+const store = configureStore(() => state, state);
 
 ReactDOM.hydrate(
-  <App />,
-  document.querySelector('[data-js="bundle"]')
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>,
+  document.querySelector('[data-app="root"]')
 );
